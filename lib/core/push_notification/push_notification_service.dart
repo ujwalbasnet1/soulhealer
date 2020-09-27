@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:soulhealer/core/logger/log.dart';
 
 class PushNotificationService {
   final FirebaseMessaging _fcm = FirebaseMessaging();
@@ -31,6 +32,12 @@ class PushNotificationService {
 
   Future subscribe(String topic) async {
     _fcm.subscribeToTopic(topic);
+    Log.debug("PNS ", "$topic is subscribed");
+    return await _fcm.getToken();
+  }
+
+  Future unSubscribe(String topic) async {
+    _fcm.unsubscribeFromTopic(topic);
     return await _fcm.getToken();
   }
 

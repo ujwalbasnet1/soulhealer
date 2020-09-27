@@ -59,6 +59,7 @@ abstract class ThirdPartyModules {
 }
 
 customDioErrorInterceptor(DioError error, {String logTitle = ""}) {
+  Log.debug("ABC", error.response.data.toString());
   if (error.response != null) {
     // that falls out of the range of 2xx and is also not 304;
     try {

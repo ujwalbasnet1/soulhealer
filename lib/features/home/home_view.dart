@@ -4,6 +4,7 @@ import 'package:soulhealer/common/k_toast.dart';
 import 'package:soulhealer/common/user_data_service.dart';
 import 'package:soulhealer/core/navigation/navigation_service.dart';
 import 'package:soulhealer/core/navigation/routes.gr.dart';
+import 'package:soulhealer/core/push_notification/push_notification_service.dart';
 import 'package:soulhealer/data_sources/auth/models/models.dart';
 import 'package:soulhealer/di/injection.dart';
 import 'package:soulhealer/features/home/quote_item_widget.dart';
@@ -187,7 +188,11 @@ class HomeView extends StatelessWidget {
       actions: <Widget>[
         IconButton(
           icon: Icon(Icons.lock, color: Colors.black),
-          onPressed: () {
+          onPressed: () async {
+            UserDataService().clear();
+            await injection<PushNotificationService>().unSubscribe("hero");
+            await injection<PushNotificationService>()
+                .unSubscribe(UserDataService().user.id);
             injection<NavigationService>().navigateToRoute(Routes.loginRoute);
           },
         ),

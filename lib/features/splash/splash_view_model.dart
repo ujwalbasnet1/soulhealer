@@ -17,14 +17,17 @@ class SplashViewModel extends BaseViewModel {
     UserDataService().retrieve();
 
     if (UserDataService().isLoggedIn) {
+      await _notificationService.init();
+      await _notificationService.subscribe(UserDataService().user.id);
+
       if (UserDataService().user.userType == UserType.USER) {
         MessageUserManager().init();
       } else {
+        await _notificationService.subscribe("hero");
+
         MessageHeroManager().init();
       }
 
-      await _notificationService.init();
-      await _notificationService.subscribe(UserDataService().user.id);
       await Future.delayed(Duration(milliseconds: 1200));
 
       _navigationService.navigateToRoute(Routes.homeRoute, clearStack: true);
