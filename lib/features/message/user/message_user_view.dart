@@ -23,7 +23,22 @@ class _MessageUserViewState extends State<MessageUserView> {
         builder: (context, MessageUserViewModel model, child) {
           return Scaffold(
             backgroundColor: Color(0xFF0A6C79),
-            appBar: AppBar(title: Text("Messages"), elevation: 0),
+            appBar: AppBar(
+              title: Text("Messages"),
+              elevation: 0,
+              actions: <Widget>[
+                IconButton(
+                  onPressed: model.blockHero,
+                  icon: model.blocking
+                      ? SizedBox(
+                          height: 20,
+                          width: 20,
+                          child: CircularProgressIndicator(),
+                        )
+                      : Icon(Icons.not_interested),
+                ),
+              ],
+            ),
             body: _buildBody(model),
           );
         });
@@ -52,7 +67,10 @@ class _MessageUserViewState extends State<MessageUserView> {
           if (index == 0) return _buildChatField(context, model);
           return MessageItemWidget(
             model: model.reverseMessages[index - 1],
-            pastModel: ((index - 2) >= 0 && (index - 2) < model.reverseMessages.length) ? model.reverseMessages[index - 2] : null,
+            pastModel:
+                ((index - 2) >= 0 && (index - 2) < model.reverseMessages.length)
+                    ? model.reverseMessages[index - 2]
+                    : null,
           );
         },
       ),
@@ -101,19 +119,26 @@ class _MessageUserViewState extends State<MessageUserView> {
 
   _buildLoading() => CircularProgressIndicator();
 
-  _buildError(String message, Function tryAgain) => Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          Text(message,
+  _buildError(String message, Function tryAgain) => Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 32),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Text(
+              message,
+              textAlign: TextAlign.center,
               style: TextStyle(
-                  color: Colors.red,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold)),
-          SizedBox(height: 4),
-          OutlineButton(
-            child: Text("Try Again"),
-            onPressed: tryAgain,
-          )
-        ],
+                color: Colors.red,
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 4),
+            OutlineButton(
+              child: Text("Try Again"),
+              onPressed: tryAgain,
+            )
+          ],
+        ),
       );
 }

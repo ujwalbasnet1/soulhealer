@@ -121,4 +121,25 @@ class MessageUserViewModel extends BaseViewModel {
       setLoading(false);
     }
   }
+
+  bool _blocking = false;
+  bool get blocking => _blocking;
+
+  blockHero() async {
+    update(() => _blocking = true);
+
+    clearFailure();
+    final result = await _messageRepo.blockVolunteer();
+
+    result.fold(
+      (NetworkFailure e) => setFailure(e.message),
+      (_) {
+        KToast.s("Blocked Hero.. You will shortly be replied by another hero");
+
+        update(() => _blocking = false);
+      },
+    );
+
+    update(() => _blocking = false);
+  }
 }
