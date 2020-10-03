@@ -8,6 +8,8 @@ import 'package:soulhealer/di/injection.dart';
 import 'package:soulhealer/features/message/hero/message_hero_manager.dart';
 import 'package:soulhealer/features/message/user/message_user_manager.dart';
 
+import '../onboarding.dart';
+
 class SplashViewModel extends BaseViewModel {
   final NavigationService _navigationService = injection<NavigationService>();
   final PushNotificationService _notificationService =
@@ -16,24 +18,31 @@ class SplashViewModel extends BaseViewModel {
   Future initialize() async {
     UserDataService().retrieve();
 
-    if (UserDataService().isLoggedIn) {
-      await _notificationService.init();
-      await _notificationService.subscribe(UserDataService().user.id);
-
-      if (UserDataService().user.userType == UserType.USER) {
-        MessageUserManager().init();
-      } else {
-        await _notificationService.subscribe("hero");
-
-        MessageHeroManager().init();
-      }
-
+    bool _onboardingShown = UserDataService().onboardingSeen ?? false;
+    
+    if (!_onboardingShown) {
+      UserDataService().saveOnboarding();
       await Future.delayed(Duration(milliseconds: 1200));
-
-      _navigationService.navigateToRoute(Routes.homeRoute, clearStack: true);
+      _navigationService.navigate(OnboardingView(), clearStack: true);
     } else {
-      await Future.delayed(Duration(milliseconds: 1200));
-      _navigationService.navigateToRoute(Routes.loginRoute, clearStack: true);
+      if (UserDataService().isLoggedIn) {
+        await _notificationService.init();
+        await _notificationService.subscribe(UserDataService().user.id);
+
+        if (UserDataService().user.userType == UserType.USER) {
+          MessageUserManager().init();
+        } else {
+          await _notificationService.subscribe("hero");
+          MessageHeroManager().init();
+        }
+
+        await Future.delayed(Duration(milliseconds: 1200));
+
+        _navigationService.navigateToRoute(Routes.homeRoute, clearStack: true);
+      } else {
+        await Future.delayed(Duration(milliseconds: 1200));
+        _navigationService.navigateToRoute(Routes.loginRoute, clearStack: true);
+      }
     }
   }
 }

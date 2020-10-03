@@ -7,13 +7,26 @@ class SplashView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: ViewModelProvider<SplashViewModel>.withConsumer(
-          viewModelBuilder: () => SplashViewModel(),
-          onModelReady: (model) => model.initialize(),
-          disposeViewModel: true,
-          staticChild: Container(color: Theme.of(context).primaryColor),
-          builder: (context, SplashViewModel model, child) {
-            return child;
-          }),
+        viewModelBuilder: () => SplashViewModel(),
+        onModelReady: (model) => model.initialize(),
+        disposeViewModel: true,
+        staticChild: Container(
+          color: Theme.of(context).primaryColor.withOpacity(0.5),
+          child: Center(
+            child: Container(
+              padding: const EdgeInsets.all(32),
+              width: MediaQuery.of(context).size.width * 0.5,
+              child: Image.asset(
+                'assets/images/soulhealer.png',
+                fit: BoxFit.fitWidth,
+              ),
+            ),
+          ),
+        ),
+        builder: (context, SplashViewModel model, child) {
+          return child;
+        },
+      ),
     );
   }
 }

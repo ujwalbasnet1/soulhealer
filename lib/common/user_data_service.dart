@@ -7,6 +7,7 @@ import 'package:soulhealer/data_sources/auth/models/login_response.dart';
 
 class UserDataService {
   final String _tokenKEY = "TOKEN";
+  final String _onboardingKEY = "ONBOARD";
   final String _userKEY = "USER";
 
   Log log = Log("UserDataService");
@@ -23,6 +24,9 @@ class UserDataService {
     // log.d(_id);
     return _id;
   }
+
+  bool _onboardingSeen = false;
+  bool get onboardingSeen => _onboardingSeen;
 
   String _token;
   String get token {
@@ -53,6 +57,10 @@ class UserDataService {
     }
   }
 
+  saveOnboarding() {
+    LocalCacheService.store<bool>(_onboardingKEY, true);
+  }
+
   saveUser(UserResponseModel u) {
     if (u != null) {
       _user = u;
@@ -67,6 +75,7 @@ class UserDataService {
 
   retrieve() {
     // TODO
+    _onboardingSeen = LocalCacheService.retrieve<bool>(_onboardingKEY);
     _token = LocalCacheService.retrieve<String>(_tokenKEY);
     // =
     // "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiT3NzaWUiLCJlbWFpbCI6Ik9zc2llMDE2M0Bzb3VsaGVhbGVyLmFwcCIsInR5cGUiOiJISURERU4iLCJpZCI6IjVmNTA2MTA4MmYwZGQyMjJkNmQ2Mjk2ZiIsImlhdCI6MTU5OTEwMzI0MDM4MH0.27tMDhDZFVBKkRj_wFKAM6LudjCi1jKl0pmO4hBo_JU";
